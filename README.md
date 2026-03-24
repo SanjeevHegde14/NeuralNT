@@ -54,3 +54,51 @@ A native web testing environment utilizing Gradio components for manipulating tr
 4. Upload custom `.zip` or `.csv` dataset schemas natively through the mobile front-end to trigger, compile, tune, and query deeply sophisticated Neural Network outcomes seamlessly!
 
 <p align="center"><i>Beautiful, scalable, robust deep-learning architectures deployed explicitly onto native user hardware.</i></p>
+
+---
+
+## ⚙️ Prerequisites
+
+Before you begin, please ensure you have the following installed on your machine:
+- **Flutter SDK** (v3.19+ recommended) for `neuralnt_mobile/` compilation and testing.
+- **Python 3.11+** with `pip` for local `training_service/` API execution.
+- **Docker** (Optional, recommended for mimicking the production Hugging Face environment).
+- A valid **Hugging Face** account to orchestrate the backend GPU endpoints via Spaces.
+
+---
+
+## 🏁 Quickstart Guide
+
+### 1. Launching the Backend Service
+1. Navigate to the backend directory:
+   ```bash
+   cd training_service/
+   ```
+2. Install the necessary Python packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Boot up the local FastAPI hardware stream:
+   ```bash
+   uvicorn app:app --host 0.0.0.0 --port 7860 --reload
+   ```
+
+### 2. Bootstrapping the Mobile Client
+1. Navigate to the Flutter core library:
+   ```bash
+   cd neuralnt_mobile/
+   ```
+2. Fetch the required Dart configurations:
+   ```bash
+   flutter pub get
+   ```
+3. Test locally on an emulator or a tethered hardware device:
+   ```bash
+   flutter run
+   ```
+
+---
+
+## 📜 License
+
+This repository is licensed under the MIT License. See the native configurations for detailed distribution rights. Open-source deep-learning architectures deployed elegantly across native UI systems.

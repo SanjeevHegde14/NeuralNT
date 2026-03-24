@@ -72,7 +72,7 @@ def generate_3d_animation_pca(weight_path, loss_history, output_path,
     def update(i):
         point.set_data([reduced[i, 0]], [reduced[i, 1]])
         point.set_3d_properties([interpolated_loss[i]])
-        return point,
+        return (point,)
 
     interval = 1000 / frame_rate
     ani = animation.FuncAnimation(

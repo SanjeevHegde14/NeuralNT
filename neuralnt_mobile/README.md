@@ -1,17 +1,25 @@
-# neuralnt_mobile
+# 📱 NeuralNT Mobile
 
-A new Flutter project.
+NeuralNT Mobile is a highly polished, robust frontend written entirely in Dart/Flutter. It acts as the core interface bridging mobile clients seamlessly with our remote Hugging Face GPU hardware clusters via secure backend streaming.
 
-## Getting Started
+## ✨ Features
 
-This project is a starting point for a Flutter application.
+- **Dark/Light Mode**: Premium, fluid aesthetic configurations scaling cleanly across native devices.
+- **Real-Time Timers (`Timer.periodic`)**: Asynchronous training timers tracking elapsed logic precisely independent of server roundtrips.
+- **Live SSE Gradient Streams**: Consumes chunked backend data asynchronously directly mapping logs to beautifully rendered user graphs.
+- **Stateful Navigation (`IndexedStack`)**: Keeps complex multi-screen background training fully persisted while toggling over tabs intuitively.
+- **Hardware-Level Abortion (`StreamSubscription`)**: Direct kill-switch mechanisms for stopping intensive training endpoints prematurely through local button bindings.
 
-A few resources to get you started if this is your first Flutter project:
+## 🛠 Compilation Instructions
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+To build a fresh natively signed Android APK:
+```bash
+flutter clean
+flutter pub get
+flutter build apk --release
+```
+The resulting executable binary payload will successfully stream to `build/app/outputs/flutter-apk/app-release.apk`.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🌐 Connected Dependencies 
+
+NeuralNT Mobile expects the `training_service/` FastAPI application to be securely accessible. Modify the internal endpoint variable cleanly in `lib/services/api_service.dart` if testing locally on a `localhost` subnet interface!
