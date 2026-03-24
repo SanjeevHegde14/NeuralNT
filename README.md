@@ -1,102 +1,104 @@
-# NeuralNT (Flutter + PyTorch Edition)
+# 🧠 NeuralNT
 
-Neural Network Training App made to train and test custom AI models without any coding required. Built with a **Flutter** mobile frontend and a **FastAPI/PyTorch** backend.
+NeuralNT is a high-performance cross-platform system that completely decouples Machine Learning configuration from processing hardware. By leveraging a Flutter mobile application and a cloud-based Python deployment, it allows anyone to build, train, configure, and monitor deep neural networks natively on their phone—offloading all intensive computing to a remote GPU environment (e.g., Hugging Face Spaces).
 
-## 🚀 Setup Instructions
+## 🚀 Key Features
 
-### 1. Prerequisites
-- **Python 3.9+**
-- **Flutter SDK**: Installed at `C:\src\flutter` (or updated in your PATH).
-- **Android Studio**: With Android SDK 34 and 36 installed via SDK Manager.
-
-### 2. Start the Backend (The Engine)
-Open a terminal in the project root and run:
-```bash
-# Install dependencies
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-pip install fastapi uvicorn python-multipart pandas numpy scikit-learn matplotlib Pillow py-cpuinfo
-
-# Start the server
-python backend_api.py
-```
-*The server will run on `http://localhost:8000`. Leave this terminal open.*
-
-### 3. Start the Frontend (The App)
-Open a **new** terminal tab, navigate to the `frontend` folder, and run:
-```bash
-cd frontend
-
-# Fix Path if 'flutter' is not recognized
-$env:Path += ";C:\src\flutter\bin"
-
-# Sync and Launch
-flutter clean
-flutter pub get
-flutter run --android-skip-build-dependency-validation
-```
-
-## 🛠 Features & How to Use
-1.  **Build**: Use the side menu to add layers (Conv2d, Linear, etc.). It talks to the backend to verify dimensions.
-2.  **Train**: Switch to the Train tab. Upload a `.zip` dataset (like CIFAR-10). Hit **Start Training**. 
-    - *Note: Training happens on your PC. The phone shows progress.*
-3.  **Test**: Switch to the Test tab. Upload a single image (e.g., a cat) to see the model's prediction and confidence score.
-
-## 📡 Mobile + PC local Wi-Fi (recommended)
-This is the stable working mode:
-- Backend server on PC (`uvicorn ... --host 0.0.0.0 --port 8000`)
-- Flutter app on device connects to `http://<PC_IP>:8000`
-
-### 1) Start backend
-```powershell
-cd D:\projeks\internship\P2\NNT2\NeuralNT
-python -m uvicorn backend_api:app --host 0.0.0.0 --port 8000 --reload
-```
-
-### 2) Confirm backend is reachable on PC
-```powershell
-curl http://127.0.0.1:8000/health
-# expected: {"status":"ok" ...}
-```
-
-### 3) Configure firewall (Windows)
-```powershell
-netsh advfirewall firewall add rule name="NeuralNT 8000" dir=in action=allow protocol=tcp localport=8000
-```
-
-### 4) Get PC IP
-`ipconfig` -> e.g. `192.168.1.42`
-
-### 5) In mobile app, set backend target
-- On **Build** tab use fields:
-  - Host: `192.168.1.42`
-  - Port: `8000`
-- Click **Apply & Connect**
-- You should see architecture and API readable state.
-
-### 6) Test in mobile browser
-`http://192.168.1.42:8000/health` should show `{"status":"ok"}`.
-
-## 📱 APK build and install
-From `frontend`:
-```powershell
-flutter clean
-flutter pub get
-flutter build apk --release
-adb install -r build\app\outputs\flutter-apk\app-release.apk
-```
-
-## 🐞 Debug tips
-- If mobile says API unavailable:
-  - ensure same Wi-Fi
-  - ensure backend is running and reachable from PC browser
-  - ensure firewall rule is active
-  - try `http://<PC_IP>:8000/docs` from mobile browser
-- If app is still using `localhost`, use the UI server fields in Build tab.
-
-## ⚠️ Known Fixes (Troubleshooting)
-- **SDK Errors**: This project is configured for **compileSdk 36**. If missing, install it via Android Studio > SDK Manager.
-- **Java/Kotlin Errors**: The project uses **Java 17**. Ensure your environment supports it.
-- **Connection**: On Emulator, the app uses `10.0.2.2` to find your PC. For a real phone, update `baseUrl` in `main.dart` to your PC's IPv4 address.
+*   **Cloud GPU Training via Mobile**: You don't need a massive rig or local CUDA environment to train PyTorch architectures. Simply interact natively with the Flutter Android/iOS app, and your tasks are streamed via SSE networks directly to the backend GPU payload.
+*   **Fully Asynchronous UI (`IndexedStack`)**: Toggle between Training and Predict tabs seamlessly. Your live server connections and real-time training progress bars remain strictly active processing in the background.
+*   **Live Log Streaming & Visual Timers**: View exact batch logs, elapsed model-fitting timestamps in real-time (`Timer.periodic`), and live gradient descent outputs cleanly compiled by the backend microservice.
+*   **Native Inference Histories**: All previously predicted outcomes and compiled `.pt` Base64 binaries are explicitly stored locally and dynamically cached via `shared_preferences` for instantaneous loading.
 
 ---
-**NeuralNT - Building the future of no-code AI.**
+
+## 📂 Architecture
+
+NeuralNT is divided into three standalone environments inside this monorepo:
+
+### 1. `neuralnt_mobile/` ✨ (Core)
+The highly-polished, Dark/Light Mode compatible native Flutter application.
+*   **Framework**: Dart / Flutter
+*   **UI Features**: Custom premium NeuralNT AI app icon (`flutter_launcher_icons`), dynamic memory routing, and hardware cancellation hooks via `StreamSubscription()`.
+*   **How to Build**:
+    ```bash
+    cd neuralnt_mobile
+    flutter clean
+    flutter pub get
+    flutter build apk --release
+    ```
+    This outputs the signed Android APK directly to `build/app/outputs/flutter-apk/app-release.apk`.
+
+### 2. `training_service/` ☁️ (Cloud Microservice)
+The blazing fast FastAPI payload explicitly configured to deploy instantly as a Docker instance.
+*   **Framework**: Python, FastAPI, PyTorch
+*   **Capabilities**: Parses custom user network layers, synthesizes dynamic `torch.nn.Sequential` load graphs, dispatches SSE chunking streams, and encodes compiled models back into raw `Base64` files for instant mobile extraction.
+*   **How to Deploy**:
+    Navigate to your Hugging Face space, select the "Docker" framework template, and upload the entire raw contents of this folder. The native `Dockerfile` explicitly invokes `uvicorn`.
+
+### 3. `web_client/` 💻 (Browser Testing UI)
+A native web testing environment utilizing Gradio components for manipulating training hyperparameter configurations cleanly across generic Desktop browsers.
+*   **Framework**: Python, Gradio
+*   **Execution**:
+    ```bash
+    cd web_client
+    python app.py
+    ```
+
+---
+
+## 🛠 Integration Pipeline
+
+1. Deploy the `training_service/` folder securely as a standard Docker cluster natively inside Hugging Face Spaces.
+2. The remote backend instances automatically spin up REST API endpoints at `/health`, `/train`, and `/predict`.
+3. Build the `neuralnt_mobile/` Flutter payload entirely across local device clusters.
+4. Upload custom `.zip` or `.csv` dataset schemas natively through the mobile front-end to trigger, compile, tune, and query deeply sophisticated Neural Network outcomes seamlessly!
+
+<p align="center"><i>Beautiful, scalable, robust deep-learning architectures deployed explicitly onto native user hardware.</i></p>
+
+---
+
+## ⚙️ Prerequisites
+
+Before you begin, please ensure you have the following installed on your machine:
+- **Flutter SDK** (v3.19+ recommended) for `neuralnt_mobile/` compilation and testing.
+- **Python 3.11+** with `pip` for local `training_service/` API execution.
+- **Docker** (Optional, recommended for mimicking the production Hugging Face environment).
+- A valid **Hugging Face** account to orchestrate the backend GPU endpoints via Spaces.
+
+---
+
+## 🏁 Quickstart Guide
+
+### 1. Launching the Backend Service
+1. Navigate to the backend directory:
+   ```bash
+   cd training_service/
+   ```
+2. Install the necessary Python packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Boot up the local FastAPI hardware stream:
+   ```bash
+   uvicorn app:app --host 0.0.0.0 --port 7860 --reload
+   ```
+
+### 2. Bootstrapping the Mobile Client
+1. Navigate to the Flutter core library:
+   ```bash
+   cd neuralnt_mobile/
+   ```
+2. Fetch the required Dart configurations:
+   ```bash
+   flutter pub get
+   ```
+3. Test locally on an emulator or a tethered hardware device:
+   ```bash
+   flutter run
+   ```
+
+---
+
+## 📜 License
+
+This repository is licensed under the MIT License. See the native configurations for detailed distribution rights. Open-source deep-learning architectures deployed elegantly across native UI systems.

@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+sse-starlette
+python-multipart
+torch
+torchvision
+numpy
+pandas
+scikit-learn
+matplotlib
+Pillow
+py-cpuinfo
